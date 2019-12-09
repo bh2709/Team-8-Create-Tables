@@ -1,0 +1,146 @@
+stmt='''
+Create table country(
+    country_code integer,
+    country_name varchar(200) not null,
+    Primary key (country_code)
+);
+
+Create table provstate(
+    provstate_code integer,
+    provstate varchar(200) not null,
+    Primary key(provstate_code)
+);
+
+Create table city(
+    city_code integer,
+    city_name varchar(200) not null,
+    Primary key(city_code)
+);
+
+Create table region(
+    region_code integer,
+    region_name varchar(200) not null,
+    Primary key (region_code)
+);
+
+Create table location(
+    country_code integer,
+    region_code integer,
+    provstate_code integer,
+    city_code integer,
+    Primary key(country_code,region_code,provstate_code,city_code) 
+    , FOREIGN KEY (country_code) REFERENCES country (country_code)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (region_code) REFERENCES region (region_code)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (provstate_code) REFERENCES provstate (provstate_code)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (city_code) REFERENCES city (city_code)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+Create table propertyextent(
+    propextent integer,
+    description varchar(200) not null,
+    Primary key(propextent)
+);
+
+Create table events(
+    eventid bigint,
+    Date timestamp,
+    extended integer, 
+    city_code integer, 
+    pers integer, 
+    icipla integer,
+    oihl integer,
+    multiple integer,
+    success integer,
+    suicide integer,
+    nperps integer,
+    nperpcap integer,
+    nkill integer,
+    nkillus integer,
+    nkillter integer,
+    property integer, 
+    propextent integer,
+    Primary Key (eventid)
+    , FOREIGN KEY (city_code) REFERENCES city (city_code)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (propextent) REFERENCES propertyextent(propextent)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    ,CHECK (extended IN (0,1))
+    ,CHECK (PERS IN (0,1))
+    ,CHECK (ICIPLA IN (0,1))
+    ,CHECK (OIHL IN (0,1))
+    ,CHECK (multiple IN (0,1))
+    ,CHECK (success IN (0,1))
+    ,CHECK (suicide IN (0,1))
+    ,CHECK (suicide IN (0,1,-9))
+);
+
+Create table attack_type(
+    attack_type_id integer,
+    attack_type_txt varchar(100) not null,
+    Primary key (attack_type_id)
+);
+
+Create table event_attack_type(
+    eventid bigint,
+    attack_type_id integer,
+    Primary key(eventid,attack_type_id)
+    , FOREIGN KEY (eventid) REFERENCES events (eventid)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (attack_type_id) REFERENCES attack_type (attack_type_id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+Create table target_type(
+    target_type_id integer,
+    target_type_txt varchar(100) not null,
+    Primary key (target_type_id)
+);
+
+Create table event_target_type(
+    eventid bigint,
+    target_type_id integer,
+    Primary Key(eventid,target_type_id)
+    , FOREIGN KEY (eventid) REFERENCES events (eventid)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (target_type_id) REFERENCES target_type (target_type_id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+Create table gname(
+    gname_id integer,
+    gname_name varchar not null,
+    primary key (gname_id)
+);
+
+Create table event_gname(
+    eventid bigint,
+    gname_id integer,
+    Primary Key(eventid,gname_id)
+    , FOREIGN KEY (eventid) REFERENCES events (eventid)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (gname_id) REFERENCES gname (gname_id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+Create table weapon_type(
+    weapon_type_id integer,
+    weapon_type_name varchar(100) not null,
+    Primary Key (weapon_type_id)
+);
+
+Create table event_weapon_type(
+    eventid bigint,
+    weapon_type_id integer,
+    Primary Key(eventid,weapon_type_id)
+    , FOREIGN KEY (eventid) REFERENCES events (eventid)
+        ON UPDATE CASCADE ON DELETE CASCADE
+    , FOREIGN KEY (weapon_type_id) REFERENCES weapon_type (weapon_type_id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+'''
+connection.execute(stmt)
